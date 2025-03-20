@@ -15,7 +15,7 @@ val scala3 = "3.3.4"
 val scalaJS = "1.17.0"
 val communityBuildDottyVersion = sys.props.get("dottyVersion").toList
 
-val scalaVersions = List(scala212, scala213, scala3) ++ communityBuildDottyVersion
+val scalaVersions = List(scala3) ++ communityBuildDottyVersion
 
 trait CaskModule extends CrossScalaModule with PublishModule{
   def isScala3 = ZincWorkerUtil.isScala3(crossScalaVersion)
@@ -40,7 +40,7 @@ trait CaskMainModule extends CaskModule {
       ivy"io.undertow:undertow-core:2.3.18.Final",
       ivy"com.lihaoyi::upickle:4.0.2"
     ) ++
-    Agg.when(isScala3)(ivy"ch.epfl.lamp::gears::0.2.0")
+    Agg.when(isScala3)(ivy"ch.epfl.lamp::gears::0.2.0") ++
     Agg.when(!isScala3)(ivy"org.scala-lang:scala-reflect:$crossScalaVersion")
   }
 
@@ -111,15 +111,15 @@ object benchmark extends Cross[BenchmarkModule](build.scalaVersions) with RunMod
       }
     }
   }
+
   
-  /*
   def runBenchMark(projectRoot: os.Path, example: String, vt: Boolean) = {
     def runMillBackground(example: String, vt: Boolean) = {
       println(s"Running $example with vt: $vt")
       println("projectRoot: " + projectRoot)
       os.proc(
           "mill",
-          s"example.$example.app[$scala213].run")
+          s"example.$example.app[$scala3].run")
         .spawn(
           cwd = projectRoot,
           env = Map("CASK_VIRTUAL_THREAD" -> vt.toString),
@@ -171,7 +171,7 @@ object benchmark extends Cross[BenchmarkModule](build.scalaVersions) with RunMod
 
   }
 }
-*/
+
 
 trait LocalModule extends CrossScalaModule{
   override def millSourcePath = super.millSourcePath / "app"

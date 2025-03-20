@@ -12,6 +12,8 @@ import io.undertow.util.HttpString
 
 import java.util.concurrent.ExecutorService
 
+import gears.async.*
+
 /**
   * A combination of [[cask.Main]] and [[cask.Routes]], ideal for small
   * one-file web applications.

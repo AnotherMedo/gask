@@ -1,25 +1,27 @@
 package build.example.twirl
 import mill._, scalalib._
 import $ivy.`com.lihaoyi::mill-contrib-twirllib:`
-object app extends Cross[AppModule](build.scalaVersions)
-trait AppModule extends CrossScalaModule with mill.twirllib.TwirlModule{
 
-  def moduleDeps = Seq(build.cask(crossScalaVersion))
+// object app extends Cross[AppModule](build.scalaVersions)
 
-  def twirlScalaVersion = "2.13.15"
-  def twirlVersion = "1.6.8"
+// trait AppModule extends CrossScalaModule with mill.twirllib.TwirlModule{
 
-  def generatedSources = T{ Seq(compileTwirl().classes) }
-  def ivyDeps = Agg[Dep](
-    ivy"com.lihaoyi::scalatags:0.9.1".withDottyCompat(scalaVersion()),
-    ivy"com.typesafe.play::twirl-api:${twirlVersion()}".withDottyCompat(scalaVersion()),
-  )
+//   def moduleDeps = Seq(build.cask(crossScalaVersion))
 
-  object test extends ScalaTests with TestModule.Utest{
+//   def twirlScalaVersion = "2.13.15"
+//   def twirlVersion = "1.6.8"
 
-    def ivyDeps = Agg(
-      ivy"com.lihaoyi::utest::0.8.4",
-      ivy"com.lihaoyi::requests::0.9.0",
-    )
-  }
-}
+//   def generatedSources = T{ Seq(compileTwirl().classes) }
+//   def ivyDeps = Agg[Dep](
+//     ivy"com.lihaoyi::scalatags:0.9.1".withDottyCompat(scalaVersion()),
+//     ivy"com.typesafe.play::twirl-api:${twirlVersion()}".withDottyCompat(scalaVersion()),
+//   )
+
+//   object test extends ScalaTests with TestModule.Utest{
+
+//     def ivyDeps = Agg(
+//       ivy"com.lihaoyi::utest::0.8.4",
+//       ivy"com.lihaoyi::requests::0.9.0",
+//     )
+//   }
+// }
