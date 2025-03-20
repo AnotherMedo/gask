@@ -1,21 +1,21 @@
 package build.example.todoDb
 import mill._, scalalib._
 
-object app extends Cross[AppModule](build.scala213)
-trait AppModule extends CrossScalaModule{
+// object app extends Cross[AppModule](build.scala213)
+// trait AppModule extends CrossScalaModule{
 
-  def moduleDeps = Seq(build.cask(crossScalaVersion))
+//   def moduleDeps = Seq(build.cask(crossScalaVersion))
 
-  def ivyDeps = Agg[Dep](
-    ivy"org.xerial:sqlite-jdbc:3.42.0.0",
-    ivy"com.lihaoyi::scalasql:0.1.0",
-  )
+//   def ivyDeps = Agg[Dep](
+//     ivy"org.xerial:sqlite-jdbc:3.42.0.0",
+//     ivy"com.lihaoyi::scalasql:0.1.0",
+//   )
 
-  object test extends ScalaTests with TestModule.Utest{
+//   object test extends ScalaTests with TestModule.Utest{
 
-    def ivyDeps = Agg(
-      ivy"com.lihaoyi::utest::0.8.4",
-      ivy"com.lihaoyi::requests::0.9.0",
-    )
-  }
-}
+//     def ivyDeps = Agg(
+//       ivy"com.lihaoyi::utest::0.8.4",
+//       ivy"com.lihaoyi::requests::0.9.0",
+//     )
+//   }
+// }
