@@ -261,6 +261,9 @@ object Macros {
           sigss: Seq[Seq[ArgSig[Any, _, _, Any]]]
         ) => {
           val parsedArgss: Seq[Seq[Either[Seq[cask.router.Result.ParamError], Any]]] =
+            println(sigss)
+            println(argss)
+            println(ctxs)
             sigss.lazyZip(argss).lazyZip(ctxs).map { case (sigs, args, ctx) =>
               sigs.map{ case sig =>
                 Runtime.makeReadCall(

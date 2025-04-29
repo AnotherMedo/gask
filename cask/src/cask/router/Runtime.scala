@@ -1,5 +1,7 @@
 package cask.router
 
+import gears.async.*
+
 object Runtime{
 
   def tryEither[T](t: => T, error: Throwable => Result.ParamError) = {
@@ -32,6 +34,7 @@ object Runtime{
                          ctx: C,
                          default: => Option[Any],
                          arg: ArgSig[I, _, _, C]) = {
+    println(arg.reads)
     arg.reads.arity match{
       case 0 =>
         tryEither(

@@ -38,10 +38,9 @@ trait CaskMainModule extends CaskModule {
   def ivyDeps = T{
     Agg(
       ivy"io.undertow:undertow-core:2.3.18.Final",
-      ivy"com.lihaoyi::upickle:4.0.2"
-    ) ++
-    Agg.when(isScala3)(ivy"ch.epfl.lamp::gears::0.2.0") ++
-    Agg.when(!isScala3)(ivy"org.scala-lang:scala-reflect:$crossScalaVersion")
+      ivy"com.lihaoyi::upickle:4.0.2",
+      ivy"ch.epfl.lamp::gears::0.2.0"
+    ) 
   }
 
   def compileIvyDeps = Agg.when(!isScala3)(ivy"com.lihaoyi:::acyclic:0.3.15")
@@ -122,7 +121,7 @@ object benchmark extends Cross[BenchmarkModule](build.scalaVersions) with RunMod
           s"example.$example.app[$scala3].run")
         .spawn(
           cwd = projectRoot,
-          env = Map("CASK_VIRTUAL_THREAD" -> vt.toString),
+          env = Map("CASK_VIRTUAL_THREAD" -> vt.toString, "--add-opens java.base/java.lang" -> "ALL-UNNAMED"),
           stdout = os.Inherit,
           stderr = os.Inherit)
     }
