@@ -6,7 +6,7 @@ import gears.async.Async
 import gears.async.default.given
 
 object ExampleTests extends TestSuite{
-  def withServer[T](example: cask.main.Main)(f: String => T): T = {
+  def withServer[T](example: gask.main.Main)(f: String => T): T = {
     Async.blocking:
       val server = Undertow.builder
         .addHttpListener(8081, "localhost")

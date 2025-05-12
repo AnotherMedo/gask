@@ -1,26 +1,26 @@
 package app
-object Decorated extends cask.MainRoutes {
+object Decorated extends gask.MainRoutes {
   class User {
     override def toString = "[haoyi]"
   }
-  class loggedIn extends cask.RawDecorator {
-    def wrapFunction(ctx: cask.Request, delegate: Delegate) = {
+  class loggedIn extends gask.RawDecorator {
+    def wrapFunction(ctx: gask.Request, delegate: Delegate) = {
       delegate(ctx, Map("user" -> new User()))
     }
   }
-  class withExtra extends cask.RawDecorator {
-    def wrapFunction(ctx: cask.Request, delegate: Delegate) = {
+  class withExtra extends gask.RawDecorator {
+    def wrapFunction(ctx: gask.Request, delegate: Delegate) = {
       delegate(ctx, Map("extra" -> 31337))
     }
   }
 
-  class withCustomHeader extends cask.RawDecorator {
-    def wrapFunction(request: cask.Request, delegate: Delegate) = {
+  class withCustomHeader extends gask.RawDecorator {
+    def wrapFunction(request: gask.Request, delegate: Delegate) = {
       request.headers.get("x-custom-header").map(_.head) match {
         case Some(header) => delegate(request, Map("customHeader" -> header))
         case None =>
-          cask.router.Result.Success(
-            cask.model.Response(
+          gask.router.Result.Success(
+            gask.model.Response(
               s"Request is missing required header: 'X-CUSTOM-HEADER'",
               400
             )
@@ -30,39 +30,39 @@ object Decorated extends cask.MainRoutes {
   }
 
   @withExtra()
-  @cask.get("/hello/:world")
+  @gask.get("/hello/:world")
   def hello(world: String)(extra: Int) = {
     world + extra
   }
 
   @loggedIn()
-  @cask.get("/internal/:world")
+  @gask.get("/internal/:world")
   def internal(world: String)(user: User) = {
     world + user
   }
 
   @withCustomHeader()
-  @cask.get("/echo")
-  def echoHeader(request: cask.Request)(customHeader: String) = {
+  @gask.get("/echo")
+  def echoHeader(request: gask.Request)(customHeader: String) = {
     customHeader
   }
 
   @withExtra()
   @loggedIn()
-  @cask.get("/internal-extra/:world")
+  @gask.get("/internal-extra/:world")
   def internalExtra(world: String)(user: User)(extra: Int) = {
     world + user + extra
   }
 
   @withExtra()
   @loggedIn()
-  @cask.get("/ignore-extra/:world")
+  @gask.get("/ignore-extra/:world")
   def ignoreExtra(world: String)(user: User) = {
     world + user
   }
 
   @loggedIn()
-  @cask.get("/hello-default")
+  @gask.get("/hello-default")
   def defaults(world: String = "world")(user: User) = {
     world + user
   }

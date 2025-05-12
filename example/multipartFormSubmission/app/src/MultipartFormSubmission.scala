@@ -1,10 +1,10 @@
 package app
 
-object MultipartFormSubmission extends cask.MainRoutes {
+object MultipartFormSubmission extends gask.MainRoutes {
 
-  @cask.get("/")
+  @gask.get("/")
   def index() =
-    cask.model.Response(
+    gask.model.Response(
       """
     <!DOCTYPE html>
     <html lang="en">
@@ -18,8 +18,8 @@ object MultipartFormSubmission extends cask.MainRoutes {
     </html>
     """, 200, Seq(("Content-Type", "text/html")))
 
-  @cask.postForm("/post")
-  def post(somefile: cask.FormFile) =
+  @gask.postForm("/post")
+  def post(somefile: gask.FormFile) =
     s"filename: ${somefile.fileName}"
 
   initialize()

@@ -1,23 +1,23 @@
 package app
-object HttpMethods extends cask.MainRoutes{
-  @cask.route("/login", methods = Seq("get", "post"))
-  def login(request: cask.Request) = {
+object HttpMethods extends gask.MainRoutes{
+  @gask.route("/login", methods = Seq("get", "post"))
+  def login(request: gask.Request) = {
     if (request.exchange.getRequestMethod.equalToString("post")) "do_the_login"
     else "show_the_login_form"
   }
 
-  @cask.route("/session", methods = Seq("delete"))
-  def session(request: cask.Request) = {
+  @gask.route("/session", methods = Seq("delete"))
+  def session(request: gask.Request) = {
     "delete_the_session"
   }
 
-  @cask.route("/session", methods = Seq("secretmethod"))
-  def admin(request: cask.Request) = {
+  @gask.route("/session", methods = Seq("secretmethod"))
+  def admin(request: gask.Request) = {
     "security_by_obscurity"
   }
 
-  @cask.route("/api", methods = Seq("options"))
-  def cors(request: cask.Request) = {
+  @gask.route("/api", methods = Seq("options"))
+  def cors(request: gask.Request) = {
     "allow_cors"
   }
 

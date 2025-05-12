@@ -1,12 +1,12 @@
 package app
-object MinimalApplication extends cask.MainRoutes{
-  @cask.get("/")
+object MinimalApplication extends gask.MainRoutes{
+  @gask.get("/")
   def hello() = {
     "Hello World!"
   }
 
-  @cask.post("/do-thing")
-  def doThing(request: cask.Request) = {
+  @gask.post("/do-thing")
+  def doThing(request: gask.Request) = {
     request.text().reverse
   }
 

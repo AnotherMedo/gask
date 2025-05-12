@@ -1,17 +1,17 @@
 package app
-object VariableRoutes extends cask.MainRoutes{
-  @cask.get("/user/:userName") // variable path segment, e.g. HOST/user/lihaoyi
+object VariableRoutes extends gask.MainRoutes{
+  @gask.get("/user/:userName") // variable path segment, e.g. HOST/user/lihaoyi
   def getUserProfile(userName: String) = {
     s"User $userName"
   }
 
-  @cask.get("/path") // GET allowing arbitrary sub-paths, e.g. HOST/path/foo/bar/baz
-  def getSubpath(segments: cask.RemainingPathSegments) = {
+  @gask.get("/path") // GET allowing arbitrary sub-paths, e.g. HOST/path/foo/bar/baz
+  def getSubpath(segments: gask.RemainingPathSegments) = {
     s"Subpath ${segments.value}"
   }
 
-  @cask.post("/path") // POST allowing arbitrary sub-paths, e.g. HOST/path/foo/bar/baz
-  def postArticleSubpath(segments: cask.RemainingPathSegments) = {
+  @gask.post("/path") // POST allowing arbitrary sub-paths, e.g. HOST/path/foo/bar/baz
+  def postArticleSubpath(segments: gask.RemainingPathSegments) = {
     s"POST Subpath ${segments.value}"
   }
 

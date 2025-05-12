@@ -1,11 +1,11 @@
 package app
-object FormJsonPost extends cask.MainRoutes{
-  @cask.postJson("/json")
+object FormJsonPost extends gask.MainRoutes{
+  @gask.postJson("/json")
   def jsonEndpoint(value1: ujson.Value, value2: Seq[Int]) = {
     "OK " + value1 + " " + value2
   }
 
-  @cask.postJson("/json-obj")
+  @gask.postJson("/json-obj")
   def jsonEndpointObj(value1: ujson.Value, value2: Seq[Int]) = {
     ujson.Obj(
       "value1" -> value1,
@@ -13,35 +13,35 @@ object FormJsonPost extends cask.MainRoutes{
     )
   }
 
-  @cask.postForm("/form")
-  def formEndpoint(value1: cask.FormValue, value2: Seq[Int]) = {
+  @gask.postForm("/form")
+  def formEndpoint(value1: gask.FormValue, value2: Seq[Int]) = {
     "OK " + value1 + " " + value2
   }
 
-  @cask.postForm("/form-obj")
-  def formEndpointObj(value1: cask.FormValue, value2: Seq[Int]) = {
+  @gask.postForm("/form-obj")
+  def formEndpointObj(value1: gask.FormValue, value2: Seq[Int]) = {
     ujson.Obj(
       "value1" -> value1.value,
       "value2" -> value2
     )
   }
 
-  @cask.postForm("/upload")
-  def uploadFile(image: cask.FormFile) = {
+  @gask.postForm("/upload")
+  def uploadFile(image: gask.FormFile) = {
     image.fileName
   }
 
 
-  @cask.postJson("/json-extra")
+  @gask.postJson("/json-extra")
   def jsonEndpointExtra(value1: ujson.Value,
                         value2: Seq[Int],
-                        params: cask.QueryParams,
-                        segments: cask.RemainingPathSegments) = {
+                        params: gask.QueryParams,
+                        segments: gask.RemainingPathSegments) = {
     "OK " + value1 + " " + value2 + " " + params.value + " " + segments.value
   }
 
-  @cask.postJsonCached("/json-obj-cached")
-  def jsonEndpointObjCached(value1: ujson.Value, value2: Seq[Int], request: cask.Request) = {
+  @gask.postJsonCached("/json-obj-cached")
+  def jsonEndpointObjCached(value1: ujson.Value, value2: Seq[Int], request: gask.Request) = {
     ujson.Obj(
       "value1" -> value1,
       "value2" -> value2,
@@ -51,11 +51,11 @@ object FormJsonPost extends cask.MainRoutes{
     )
   }
 
-  @cask.postForm("/form-extra")
-  def formEndpointExtra(value1: cask.FormValue, 
+  @gask.postForm("/form-extra")
+  def formEndpointExtra(value1: gask.FormValue, 
                         value2: Seq[Int],
-                        params: cask.QueryParams,
-                        segments: cask.RemainingPathSegments) = {
+                        params: gask.QueryParams,
+                        segments: gask.RemainingPathSegments) = {
     "OK " + value1 + " " + value2 + " " + params.value + " " + segments.value
   }
   

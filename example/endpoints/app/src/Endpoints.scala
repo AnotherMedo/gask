@@ -1,19 +1,19 @@
 package app
 
 class custom(val path: String, val methods: Seq[String])
-  extends cask.HttpEndpoint[Int, Seq[String]]{
-  def wrapFunction(ctx: cask.Request, delegate: Delegate) = {
+  extends gask.HttpEndpoint[Int, Seq[String]]{
+  def wrapFunction(ctx: gask.Request, delegate: Delegate) = {
     delegate(ctx, Map()).map{num =>
-      cask.Response("Echo " + num, statusCode = num)
+      gask.Response("Echo " + num, statusCode = num)
     }
   }
 
   def wrapPathSegment(s: String) = Seq(s)
 
-  type InputParser[T] = cask.endpoints.QueryParamReader[T]
+  type InputParser[T] = gask.endpoints.QueryParamReader[T]
 }
 
-object Endpoints extends cask.MainRoutes{
+object Endpoints extends gask.MainRoutes{
 
 
   @custom("/echo/:status", methods = Seq("get"))

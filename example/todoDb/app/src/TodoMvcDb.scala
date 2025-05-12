@@ -3,8 +3,8 @@ import scalasql.DbApi.Txn
 import scalasql.Sc
 import scalasql.SqliteDialect._
 
-object TodoMvcDb extends cask.MainRoutes{
-  val tmpDb = java.nio.file.Files.createTempDirectory("todo-cask-sqlite")
+object TodoMvcDb extends gask.MainRoutes{
+  val tmpDb = java.nio.file.Files.createTempDirectory("todo-gask-sqlite")
   val sqliteDataSource = new org.sqlite.SQLiteDataSource()
   sqliteDataSource.setUrl(s"jdbc:sqlite:$tmpDb/file.db")
   lazy val sqliteClient = new scalasql.DbClient.DataSource(
@@ -12,11 +12,11 @@ object TodoMvcDb extends cask.MainRoutes{
     config = new scalasql.Config {}
   )
 
-  class transactional extends cask.RawDecorator{
-    def wrapFunction(pctx: cask.Request, delegate: Delegate) = {
+  class transactional extends gask.RawDecorator{
+    def wrapFunction(pctx: gask.Request, delegate: Delegate) = {
       sqliteClient.transaction { txn =>
         val res = delegate(pctx, Map("txn" -> txn))
-        if (res.isInstanceOf[cask.router.Result.Error]) txn.rollback()
+        if (res.isInstanceOf[gask.router.Result.Error]) txn.rollback()
         res
       }
     }
@@ -35,13 +35,13 @@ object TodoMvcDb extends cask.MainRoutes{
       |);
       |
       |INSERT INTO todo (checked, text) VALUES
-      |(1, 'Get started with Cask'),
+      |(1, 'Get started with Gask'),
       |(0, 'Profit!');
       |""".stripMargin
   )
 
   @transactional
-  @cask.get("/list/:state")
+  @gask.get("/list/:state")
   def list(state: String)(txn: Txn) = {
     val filteredTodos = state match{
       case "all" => txn.run(Todo.select)
@@ -52,8 +52,8 @@ object TodoMvcDb extends cask.MainRoutes{
   }
 
   @transactional
-  @cask.post("/add")
-  def add(request: cask.Request)(txn: Txn) = {
+  @gask.post("/add")
+  def add(request: gask.Request)(txn: Txn) = {
     val body = request.text()
     txn.run(
       Todo
@@ -67,13 +67,13 @@ object TodoMvcDb extends cask.MainRoutes{
   }
 
   @transactional
-  @cask.post("/toggle/:index")
+  @gask.post("/toggle/:index")
   def toggle(index: Int)(txn: Txn) = {
     txn.run(Todo.update(_.id === index).set(p => p.checked := !p.checked))
   }
 
   @transactional
-  @cask.post("/delete/:index")
+  @gask.post("/delete/:index")
   def delete(index: Int)(txn: Txn) = {
     txn.run(Todo.delete(_.id === index))
   }

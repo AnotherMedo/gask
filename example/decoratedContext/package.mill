@@ -5,7 +5,7 @@ object app extends ScalaModule{
 
   def scalaVersion = build.scala3
 
-  def moduleDeps = Seq(build.cask(build.scala3))
+  def moduleDeps = Seq(build.gask(build.scala3))
 
   def ivyDeps = Agg[Dep](
   )

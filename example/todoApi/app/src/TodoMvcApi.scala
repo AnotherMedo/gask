@@ -1,15 +1,15 @@
 package app
-object TodoMvcApi extends cask.MainRoutes{
+object TodoMvcApi extends gask.MainRoutes{
   case class Todo(checked: Boolean, text: String)
   object Todo{
     implicit def todoRW: upickle.default.ReadWriter[Todo] = upickle.default.macroRW[Todo]
   }
   var todos = Seq(
-    Todo(true, "Get started with Cask"),
+    Todo(true, "Get started with Gask"),
     Todo(false, "Profit!")
   )
 
-  @cask.get("/list/:state")
+  @gask.get("/list/:state")
   def list(state: String) = {
     val filteredTodos = state match{
       case "all" => todos
@@ -19,17 +19,17 @@ object TodoMvcApi extends cask.MainRoutes{
     upickle.default.write(filteredTodos)
   }
 
-  @cask.post("/add")
-  def add(request: cask.Request) = {
+  @gask.post("/add")
+  def add(request: gask.Request) = {
     todos = Seq(Todo(false, request.text())) ++ todos
   }
 
-  @cask.post("/toggle/:index")
+  @gask.post("/toggle/:index")
   def toggle(index: Int) = {
     todos = todos.updated(index, todos(index).copy(checked = !todos(index).checked))
   }
 
-  @cask.post("/delete/:index")
+  @gask.post("/delete/:index")
   def delete(index: Int) = {
     todos = todos.patch(index, Nil, 1)
   }

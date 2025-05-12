@@ -12,7 +12,7 @@
 
 $$$minimalApplication
 
-[Cask](https://github.com/lihaoyi/cask) is a simple Scala web framework inspired
+[Gask](https://github.com/lihaoyi/gask) is a simple Scala web framework inspired
 by Python's [Flask](http://flask.pocoo.org/docs/1.0/) project. It aims to bring
 simplicity, flexibility and ease-of-use to Scala webservers, avoiding cryptic
 DSLs or complicated asynchrony.
@@ -20,7 +20,7 @@ DSLs or complicated asynchrony.
 Getting Started
 ---------------
 
-The easiest way to begin using Cask is by downloading the example project above.
+The easiest way to begin using Gask is by downloading the example project above.
 
 Unzip one of the example projects available on this page (e.g. above) into a
 folder. This should give you the following files:
@@ -37,7 +37,7 @@ app/test/src/ExampleTests.scala
 ./mill -w app.runBackground
 ```
 
-This will server up the Cask application on `http://localhost:8080`. You can
+This will server up the Gask application on `http://localhost:8080`. You can
 immediately start interacting with it either via the browser, or
 programmatically via `curl` or a HTTP client like
 [Requests-Scala](https://github.com/lihaoyi/requests-scala):
@@ -64,7 +64,7 @@ can run using:
 ./mill -w app.test
 ```
 
-To configure your Cask application to work with IntelliJ, you can use:
+To configure your Gask application to work with IntelliJ, you can use:
 
 ```bash
 ./mill mill.scalalib.GenIdea/idea
@@ -73,15 +73,15 @@ To configure your Cask application to work with IntelliJ, you can use:
 This will need to be re-run when you re-configure your `build.sc` file, e.g.
 when adding additional modules or third-party dependencies.
 
-Cask is just a Scala library, and you can use Cask in any existing Scala project
+Gask is just a Scala library, and you can use Gask in any existing Scala project
 via the following coordinates:
 
 ```scala
 // Mill
-ivy"com.lihaoyi::cask:0.9.7"
+ivy"com.lihaoyi::gask:0.9.7"
 
 // SBT
-"com.lihaoyi" %% "cask" % "0.9.7"
+"com.lihaoyi" %% "gask" % "0.9.7"
 ```
 
 The `./mill` command is just a wrapper around the
@@ -90,7 +90,7 @@ all examples are Mill build files, and you can use your own installation of Mill
 instead of `./mill` if you wish. All normal Mill commands and functionality
 works for `./mill`.
 
-The following examples will walk you through how to use Cask to accomplish tasks
+The following examples will walk you through how to use Gask to accomplish tasks
 common to anyone writing a web application. Each example comes with a
 downloadable example project with code and unit tests, which you can use via the
 same `./mill -w app.runBackground` or `./mill -w app.test` workflows we saw above.
@@ -101,34 +101,34 @@ $$$minimalApplication
 
 The rough outline of how the minimal example works should be easy to understand:
 
-- You define an object that inherits from `cask.MainRoutes`
+- You define an object that inherits from `gask.MainRoutes`
 
-- Define endpoints using annotated functions, using `@cask.get` or `@cask.post`
+- Define endpoints using annotated functions, using `@gask.get` or `@gask.post`
   with the route they should match
 
 - Each function can return the data you want in the response, or a
-  `cask.Response` if you want further customization: response code, headers,
+  `gask.Response` if you want further customization: response code, headers,
   etc.
 
-- Your function can take an optional `cask.Request`, which exposes the entire
+- Your function can take an optional `gask.Request`, which exposes the entire
   incoming HTTP request if necessary. In the above example, we use it to read
   the request body into a string and return it reversed.
 
-In most cases, Cask provides convenient helpers to extract exactly the data from
+In most cases, Gask provides convenient helpers to extract exactly the data from
 the incoming HTTP request that you need, while also de-serializing it into the
 data type you need and returning meaningful errors if they are missing. Thus,
-although you can always get all the data necessary through `cask.Request`, it is
+although you can always get all the data necessary through `gask.Request`, it is
 often more convenient to use another way, which will go into below.
 
 As your application grows, you will likely want to split up the routes into
 separate files, themselves separate from any configuration of the Main
 entrypoint (e.g. overriding the port, host, default error handlers, etc.). You
-can do this by splitting it up into `cask.Routes` and `cask.Main` objects:
+can do this by splitting it up into `gask.Routes` and `gask.Main` objects:
 
 $$$minimalApplication2
 
-You can split up your routes into separate `cask.Routes` objects as makes sense
-and pass them all into `cask.Main`.
+You can split up your routes into separate `gask.Routes` objects as makes sense
+and pass them all into `gask.Main`.
 
 ## Variable Routes
 
@@ -140,7 +140,7 @@ either:
 * A parameter of the same name as the variable path segment of the same name as you 
   (e.g. `:userName` above). This can be a `String,` or other primitive types like `Int`,
   `Boolean`, `Byte`, `Short`, `Long`, `Float`, `Double`
-* A parameter of type `segments: cask.RemainingPathSegments`, if you want to allow 
+* A parameter of type `segments: gask.RemainingPathSegments`, if you want to allow 
   the endpoint to handle arbitrary sub-paths of the given path
 
 ## Query Params
@@ -158,10 +158,10 @@ You can bind query parameters to your endpoint method via parameters of the form
   least one value
 * `param: Seq[T] = Nil` for repeated params such as `?param=hello&param=world` allowing
   zero values
-* `params: cask.QueryParams` if you want your route to be able to handle arbitrary
+* `params: gask.QueryParams` if you want your route to be able to handle arbitrary
   query params without needing to list them out as separate arguments
 
-* `request: cask.Request` which provides lower level access to the things that the HTTP
+* `request: gask.Request` which provides lower level access to the things that the HTTP
   request provides
 
 ## Multi-method Routes
@@ -170,14 +170,14 @@ $$$httpMethods
 
 Sometimes, you may want to handle multiple kinds of HTTP requests in the same
 endpoint function, e.g. with code that can accept both GETs and POSTs and decide
-what to do in each case. You can use the `@cask.route` annotation to do so
+what to do in each case. You can use the `@gask.route` annotation to do so
 
 ## Receiving Form-encoded or JSON data
 
 $$$formJsonPost
 
 If you need to handle a JSON-encoded POST request, you can use the
-`@cask.postJson` decorator. This assumes the posted request body is a
+`@gask.postJson` decorator. This assumes the posted request body is a
 JSON dict, and uses its keys to populate the endpoint's parameters,
 either as raw `ujson.Value`s or deserialized into `Seq[Int]`s or other
 things. Deserialization is handled using the
@@ -185,10 +185,10 @@ things. Deserialization is handled using the
 could write your own version of `postJson` to work with any other JSON
 library of your choice.
 
-Similarly, you can mark endpoints as `@cask.postForm`, in which case the
+Similarly, you can mark endpoints as `@gask.postForm`, in which case the
 endpoints params will be taken from the form-encoded POST body either raw (as
-`cask.FormValue`s) or deserialized into simple data structures. Use
-`cask.FormFile` if you want the given form value to be a file upload.
+`gask.FormValue`s) or deserialized into simple data structures. Use
+`gask.FormFile` if you want the given form value to be a file upload.
 
 Both normal forms and multipart forms are handled the same way.
 
@@ -201,7 +201,7 @@ automatically with a helpful error message.
 
 $$$cookies
 
-Cookies are most easily read by declaring a `: cask.Cookie` parameter; the
+Cookies are most easily read by declaring a `: gask.Cookie` parameter; the
 parameter name is used to fetch the cookie you are interested in. Cookies can be
 stored by setting the `cookie` attribute in the response, and deleted simply by
 setting `expires = java.time.Instant.EPOCH` (i.e. to have expired a long time
@@ -211,16 +211,16 @@ ago)
 
 $$$staticFiles
 
-You can ask Cask to serve static files by defining a `@cask.staticFiles` endpoint.
+You can ask Gask to serve static files by defining a `@gask.staticFiles` endpoint.
 This will match any subpath of the value returned by the endpoint (e.g. above
 `/static/file.txt`, `/static/folder/file.txt`, etc.) and return the file
 contents from the corresponding file on disk (and 404 otherwise).
 
-Similarly, `@cask.staticResources` attempts to serve a request based on the JVM
+Similarly, `@gask.staticResources` attempts to serve a request based on the JVM
 resource path, returning the data if a resource is present and a 404 otherwise.
 
 You can also configure the `headers` you wish to return to static file requests,
-or use `@cask.decorators.compress` to compress the responses:
+or use `@gask.decorators.compress` to compress the responses:
 
 $$$staticFiles2
 
@@ -228,13 +228,13 @@ $$$staticFiles2
 
 $$$redirectAbort
 
-Cask provides some convenient helpers `cask.Redirect` and `cask.Abort` which you
-can return; these are simple wrappers around `cask.Request`, and simply set up
+Gask provides some convenient helpers `gask.Redirect` and `gask.Abort` which you
+can return; these are simple wrappers around `gask.Request`, and simply set up
 the relevant headers or status code for you.
 
 ## HTML Rendering
 
-Cask doesn't come bundled with HTML templating functionality, but it makes it
+Gask doesn't come bundled with HTML templating functionality, but it makes it
 really easy to use community-standard libraries like
 [Scalatags](https://github.com/lihaoyi/scalatags) to render your HTML. Simply
 adding the relevant `ivy"com.lihaoyi::scalatags:0.9.1"` dependency to your
@@ -264,16 +264,16 @@ With the following `app/views/hello.scala.html`:
 $$$decorated
 
 You can write extra decorator annotations that stack on top of the existing
-`@cask.get`/`@cask.post` to provide additional arguments or validation. This is
-done by implementing the `cask.Decorator` interface and it's `getRawParams`
+`@gask.get`/`@gask.post` to provide additional arguments or validation. This is
+done by implementing the `gask.Decorator` interface and it's `getRawParams`
 function. `getRawParams`:
 
 - Receives a `Request`, which basically gives you full access to the
   underlying undertow HTTP connection so you can pick out whatever data you
   would like
 
-- Returns an `Either[Response, cask.Decor[Any]]`. Returning a `Left` lets you
-  bail out early with a fixed `cask.Response`, avoiding further processing.
+- Returns an `Either[Response, gask.Decor[Any]]`. Returning a `Left` lets you
+  bail out early with a fixed `gask.Response`, avoiding further processing.
   Returning a `Right` provides a map of parameter names and values that will
   then get passed to the endpoint function in consecutive parameter lists (shown
   above), as well as an optional cleanup function that is run after the endpoint
@@ -296,8 +296,8 @@ Decorators are useful for things like:
   fails), or access to some system resource that needs to be released.
 
 For decorators that you wish to apply to multiple routes at once, you can define
-them by overriding the `cask.Routes#decorators` field (to apply to every
-endpoint in that routes object) or `cask.Main#mainDecorators` (to apply to every
+them by overriding the `gask.Routes#decorators` field (to apply to every
+endpoint in that routes object) or `gask.Main#mainDecorators` (to apply to every
 endpoint, period):
 
 $$$decorated2
@@ -311,7 +311,7 @@ every single endpoint.
 $$$endpoints
 
 When you need more flexibility than decorators allow, you can define your own
-custom `cask.Endpoint`s to replace the default set that Cask provides. This
+custom `gask.Endpoint`s to replace the default set that Gask provides. This
 allows you to
 
 - Change the expected return type of the annotated function, and how allows you
@@ -320,23 +320,23 @@ allows you to
   automatically serialize returned objects to JSON responses via your favorite
   library, or serialize them to bytes via protobufs
 
-- Change where the first parameter list's params are taken from: `@cask.get`
-  takes them from query params, `@cask.postForm` takes them from the
+- Change where the first parameter list's params are taken from: `@gask.get`
+  takes them from query params, `@gask.postForm` takes them from the
   form-encoded POST body, and you can write your own endpoint to take the params
   from where-ever you like: perhaps from the request headers, or a protobuf-
   encoded request body
 
-- Change how parameters are deserialized: e.g. `@cask.postJson` de-serializes
+- Change how parameters are deserialized: e.g. `@gask.postJson` de-serializes
   parameters using the [uPickle](https://github.com/lihaoyi/upickle) JSON
   library, and your own custom endpoint could change that to use another library
   like [Circe](https://github.com/circe/circe) or
   [Jackson](https://github.com/FasterXML/jackson-module-scala)
 
 - DRY up common sets of decorators: if all your endpoint functions use the same
-  decorators, you can extract that functionality into a single `cask.Endpoint`
+  decorators, you can extract that functionality into a single `gask.Endpoint`
   to do the job.
 
-Generally you should not be writing custom `cask.Endpoint`s every day, but if
+Generally you should not be writing custom `gask.Endpoint`s every day, but if
 you find yourself trying to standardize on a way of doing things across your web
 application, it might make sense to write a custom endpoint decorator: to DRY
 things up , separate business logic (inside the annotated function) from
@@ -348,17 +348,17 @@ how endpoint functions are written.
 
 $$$compress
 
-Cask provides a useful `@cask.decorators.compress` decorator that gzips or
+Gask provides a useful `@gask.decorators.compress` decorator that gzips or
 deflates a response body if possible. This is useful if you don't have a proxy
 like Nginx or similar in front of your server to perform the compression for
 you.
 
-Like all decorators, `@cask.decorators.compress` can be defined on a level of a
-set of `cask.Routes`:
+Like all decorators, `@gask.decorators.compress` can be defined on a level of a
+set of `gask.Routes`:
 
 $$$compress2
 
-Or globally, in your `cask.Main`:
+Or globally, in your `gask.Main`:
 
 $$$compress3
 
@@ -366,40 +366,40 @@ $$$compress3
 
 $$$websockets
 
-Cask's Websocket endpoints are very similar to Cask's HTTP endpoints. Annotated
-with `@cask.websocket` instead of `@cask.get` or `@cask.post`, the primary
-difference is that instead of only returning a `cask.Response`, you now have an
-option of returning a `cask.WsHandler`.
+Gask's Websocket endpoints are very similar to Gask's HTTP endpoints. Annotated
+with `@gask.websocket` instead of `@gask.get` or `@gask.post`, the primary
+difference is that instead of only returning a `gask.Response`, you now have an
+option of returning a `gask.WsHandler`.
 
-The `cask.WsHandler` allows you to pro-actively start sending websocket messages
+The `gask.WsHandler` allows you to pro-actively start sending websocket messages
 once a connection has been made, via the `channel: WsChannelActor` it exposes,
-and lets you react to messages via the `cask.WsActor` you create. You can use
+and lets you react to messages via the `gask.WsActor` you create. You can use
 these two APIs to perform full bi-directional, asynchronous communications, as
 websockets are intended to be used for. Note that all messages received on a
-each individual Websocket connection by your `cask.WsActor` are handled in a
+each individual Websocket connection by your `gask.WsActor` are handled in a
 single-threaded fashion by default: this means you can work with local mutable
-state in your `@cask.websocket` endpoint without worrying about race conditions
+state in your `@gask.websocket` endpoint without worrying about race conditions
 or multithreading. If you want further parallelism, you can explicitly spin off
-`scala.concurrent.Future`s or other `cask.BatchActor`s to perform that parallel
+`scala.concurrent.Future`s or other `gask.BatchActor`s to perform that parallel
 processing.
 
-Returning a `cask.Response` immediately closes the websocket connection, and is
+Returning a `gask.Response` immediately closes the websocket connection, and is
 useful if you want to e.g. return a 404 or 403 due to the initial request being
 invalid.
 
-Cask also provides a lower-lever websocket interface, which allows you directly
+Gask also provides a lower-lever websocket interface, which allows you directly
 work with the underlying `io.undertow.websockets.WebSocketConnectionCallback`:
 
 $$$websockets2
 
 It leaves it up to you to manage open channels, react to incoming messages, or
 pro-actively send them out, mostly using the underlying Undertow webserver
-interface. While Cask does not model streams, backpressure, iteratees, or
-provide any higher level API, it should not be difficult to take the Cask API
+interface. While Gask does not model streams, backpressure, iteratees, or
+provide any higher level API, it should not be difficult to take the Gask API
 and build whatever higher-level abstractions you prefer to use.
 
-If you are separating your `cask.Routes` from your `cask.Main`, you need to
-inject in a `cask.Logger` to handle errors reported when handling websocket
+If you are separating your `gask.Routes` from your `gask.Main`, you need to
+inject in a `gask.Logger` to handle errors reported when handling websocket
 requests:
 
 $$$websockets3
@@ -409,7 +409,7 @@ $$$websockets3
 
 $$$todoApi
 
-This is a simple self-contained example of using Cask to write an in-memory API
+This is a simple self-contained example of using Gask to write an in-memory API
 server for the common [TodoMVC example app](http://todomvc.com/).
 
 This minimal example intentionally does not contain javascript, HTML, styles,
@@ -420,7 +420,7 @@ etc.. Those can be managed via the normal mechanism for
 
 $$$todoDb
 
-This example demonstrates how to use Cask to write a TodoMVC API server that
+This example demonstrates how to use Gask to write a TodoMVC API server that
 persists it's state in a database rather than in memory. We use the
 [ScalaSql](https://github.com/com-lihaoyi/scalasql/) database access library to write a `@transactional`
 decorator that automatically opens one transaction per call to an endpoint,
@@ -450,32 +450,32 @@ implementation: including HTML generation for the web UI via
 [Scalatags](https://github.com/lihaoyi/scalatags), Javascript for the
 interactivity, static file serving, and database integration via
 [ScalaSql](https://github.com/com-lihaoyi/scalasql/). While slightly long, this example
-should give you a tour of all the things you need to know to use Cask.
+should give you a tour of all the things you need to know to use Gask.
 
 Note that this is a "boring" server-side-rendered webapp with Ajax interactions,
 without any complex front-end frameworks or libraries: it's purpose is to
-demonstrate a simple working web application of using Cask end-to-end, which you
-can build upon to create your own Cask web application architected however you
+demonstrate a simple working web application of using Gask end-to-end, which you
+can build upon to create your own Gask web application architected however you
 would like.
 
 $$$todo
 
-## Running Cask with Virtual Threads
+## Running Gask with Virtual Threads
 
 
 $$$minimalApplicationWithLoom
 
-Cask can support using Virtual Threads to handle the request out of the box, you can enable it with the next steps:
+Gask can support using Virtual Threads to handle the request out of the box, you can enable it with the next steps:
 
-1. Running cask with Java 21 or later
+1. Running gask with Java 21 or later
 2. add `--add-opens java.base/java.lang=ALL-UNNAMED` to your JVM options, which is needed to name the virtual threads.
-3. add `-Dcask.virtual-threads.enabled=true` to your JVM options, which is needed to enable the virtual threads.
+3. add `-Dgask.virtual-threads.enabled=true` to your JVM options, which is needed to enable the virtual threads.
 4. tweak the underlying carrier threads with `-Djdk.virtualThreadScheduler.parallelism`, `jdk.virtualThreadScheduler.maxPoolSize` and `jdk.unparker.maxPoolSize`.
 
 **Advanced Features**:
 
-1. You can change the default scheduler of the carrier threads with `cask.internal.Util.createVirtualThreadExecutor` method, but keep in mind, that's not officially supported by JDK for now.
-2. You can supply your own `Executor` by override the `handlerExecutor()` method in your `cask.Main` object, which will be called only once when the server starts.
+1. You can change the default scheduler of the carrier threads with `gask.internal.Util.createVirtualThreadExecutor` method, but keep in mind, that's not officially supported by JDK for now.
+2. You can supply your own `Executor` by override the `handlerExecutor()` method in your `gask.Main` object, which will be called only once when the server starts.
 3. You can use `jdk.internal.misc.Blocker`'s `begin` and `end` methods to help the `ForkJoinPool` when needed.
 4. You can use `Util.createVirtualThreadScheduler` to create separate `ForkJoinPool` as scheduler for the virtual threads.
 
@@ -500,7 +500,7 @@ Cask can support using Virtual Threads to handle the request out of the box, you
 | minimalApplicationWithLoom | Platform | 38.36 | 1.05s | 1.99s | 5.73KB |
 | minimalApplicationWithLoom | Virtual | 935.74 | 106.11ms | 126.59ms | 139.81KB |
 
-[data source](https://github.com/com-lihaoyi/cask/pull/159)
+[data source](https://github.com/com-lihaoyi/gask/pull/159)
 
 The performance of non-blocking virtual threads varies, depending on whether blocking is a problem
 or not.

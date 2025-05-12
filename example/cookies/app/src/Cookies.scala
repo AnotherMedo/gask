@@ -1,23 +1,23 @@
 package app
-object Cookies extends cask.MainRoutes{
-  @cask.get("/read-cookie")
-  def readCookies(username: cask.Cookie) = {
+object Cookies extends gask.MainRoutes{
+  @gask.get("/read-cookie")
+  def readCookies(username: gask.Cookie) = {
     username.value
   }
 
-  @cask.get("/store-cookie")
+  @gask.get("/store-cookie")
   def storeCookies() = {
-    cask.Response(
+    gask.Response(
       "Cookies Set!",
-      cookies = Seq(cask.Cookie("username", "the_username"))
+      cookies = Seq(gask.Cookie("username", "the_username"))
     )
   }
 
-  @cask.get("/delete-cookie")
+  @gask.get("/delete-cookie")
   def deleteCookie() = {
-    cask.Response(
+    gask.Response(
       "Cookies Deleted!",
-      cookies = Seq(cask.Cookie("username", "", expires = java.time.Instant.EPOCH))
+      cookies = Seq(gask.Cookie("username", "", expires = java.time.Instant.EPOCH))
     )
   }
 

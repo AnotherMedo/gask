@@ -5,8 +5,8 @@ import scalasql.SqliteDialect._
 import scalatags.Text.all._
 import scalatags.Text.tags2
 
-object TodoServer extends cask.MainRoutes{
-  val tmpDb = java.nio.file.Files.createTempDirectory("todo-cask-sqlite")
+object TodoServer extends gask.MainRoutes{
+  val tmpDb = java.nio.file.Files.createTempDirectory("todo-gask-sqlite")
 
   val sqliteDataSource = new org.sqlite.SQLiteDataSource()
   sqliteDataSource.setUrl(s"jdbc:sqlite:$tmpDb/file.db")
@@ -15,11 +15,11 @@ object TodoServer extends cask.MainRoutes{
     config = new scalasql.Config {}
   )
 
-  class transactional extends cask.RawDecorator{
-    def wrapFunction(pctx: cask.Request, delegate: Delegate) = {
+  class transactional extends gask.RawDecorator{
+    def wrapFunction(pctx: gask.Request, delegate: Delegate) = {
       sqliteClient.transaction { txn =>
         val res = delegate(pctx, Map("txn" -> txn))
-        if (res.isInstanceOf[cask.router.Result.Error]) txn.rollback()
+        if (res.isInstanceOf[gask.router.Result.Error]) txn.rollback()
         res
       }
     }
@@ -36,46 +36,46 @@ object TodoServer extends cask.MainRoutes{
       |);
       |
       |INSERT INTO todo (checked, text) VALUES
-      |(1, 'Get started with Cask'),
+      |(1, 'Get started with Gask'),
       |(0, 'Profit!');
       |""".stripMargin
   )
 
   @transactional
-  @cask.post("/list/:state")
+  @gask.post("/list/:state")
   def list(state: String)(txn: Txn) = renderBody(state)(txn).render
 
   @transactional
-  @cask.post("/add/:state")
-  def add(state: String, request: cask.Request)(implicit txn: Txn) = {
+  @gask.post("/add/:state")
+  def add(state: String, request: gask.Request)(implicit txn: Txn) = {
     val body = request.text()
     txn.run(Todo.insert.columns(_.checked := false, _.text := body))
     renderBody(state).render
   }
 
   @transactional
-  @cask.post("/delete/:state/:index")
+  @gask.post("/delete/:state/:index")
   def delete(state: String, index: Int)(implicit txn: Txn) = {
     txn.run(Todo.delete(_.id === index))
     renderBody(state).render
   }
 
   @transactional
-  @cask.post("/toggle/:state/:index")
+  @gask.post("/toggle/:state/:index")
   def toggle(state: String, index: Int)(implicit txn: Txn) = {
     txn.run(Todo.update(_.id === index).set(p => p.checked := !p.checked))
     renderBody(state).render
   }
 
   @transactional
-  @cask.post("/clear-completed/:state")
+  @gask.post("/clear-completed/:state")
   def clearCompleted(state: String)(implicit txn: Txn) = {
     txn.run(Todo.delete(_.checked))
     renderBody(state).render
   }
 
   @transactional
-  @cask.post("/toggle-all/:state")
+  @gask.post("/toggle-all/:state")
   def toggleAll(state: String)(implicit txn: Txn) = {
     val next = txn.run(Todo.select.filter(_.checked).size) != 0
     txn.run(Todo.update(_ => true).set(_.checked := !next))
@@ -140,7 +140,7 @@ object TodoServer extends cask.MainRoutes{
   }
 
   @transactional
-  @cask.get("/")
+  @gask.get("/")
   def index()(implicit txn: Txn) = {
     doctype("html")(
       html(lang := "en",
@@ -167,7 +167,7 @@ object TodoServer extends cask.MainRoutes{
     )
   }
 
-  @cask.staticResources("/static")
+  @gask.staticResources("/static")
   def static() = "todo"
 
   initialize()

@@ -2,10 +2,10 @@ package app
 
 import gears.async.*
 
-object Compress extends cask.MainRoutes{
+object Compress extends gask.MainRoutes{
 
-  @cask.decorators.compress
-  @cask.get("/")
+  @gask.decorators.compress
+  @gask.get("/")
   def hello()(using Async) = {
     "Hello World! Hello World! Hello World!"
   }
