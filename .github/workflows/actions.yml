@@ -28,7 +28,7 @@ jobs:
         run: |
           set -eux
           if [ "${{ matrix.java }}" == "21" ]; then
-             JAVA_OPTS='--add-opens java.base/java.lang=ALL-UNNAMED -Dcask.virtual-threads.enabled=true' ./mill -ikj1 --disable-ticker __.testLocal
+             JAVA_OPTS='--add-opens java.base/java.lang=ALL-UNNAMED -Dgask.virtual-threads.enabled=true' ./mill -ikj1 --disable-ticker __.testLocal
           else
             ./mill -ikj1 --disable-ticker __.testLocal
           fi
@@ -51,14 +51,14 @@ jobs:
           set -eux
             if [ "${{ matrix.java }}" == "21" ]; then
                 ./mill __.publishLocal
-                JAVA_OPTS='--add-opens java.base/java.lang=ALL-UNNAMED -Dcask.virtual-threads.enabled=true' ./mill -ikj1 --disable-ticker testExamples
+                JAVA_OPTS='--add-opens java.base/java.lang=ALL-UNNAMED -Dgask.virtual-threads.enabled=true' ./mill -ikj1 --disable-ticker testExamples
             else
                 ./mill __.publishLocal
                 ./mill -ikj1 --disable-ticker testExamples
             fi
 
   publish-sonatype:
-    if: github.repository == 'com-lihaoyi/cask' && contains(github.ref, 'refs/tags/')
+    if: github.repository == 'com-lihaoyi/gask' && contains(github.ref, 'refs/tags/')
     needs: test
     runs-on: ubuntu-latest
     env:
@@ -80,7 +80,7 @@ jobs:
         run: ./mill -i mill.scalalib.PublishModule/
         
   uploadExamples:
-    if: github.repository == 'com-lihaoyi/cask' && contains(github.ref, 'refs/tags/')
+    if: github.repository == 'com-lihaoyi/gask' && contains(github.ref, 'refs/tags/')
     runs-on: ubuntu-latest
     env:
       AMMONITE_BOT_AUTH_TOKEN: ${{ secrets.AMMONITE_BOT_AUTH_TOKEN }}
@@ -97,7 +97,7 @@ jobs:
 
 
   generate_docs:
-    if: github.repository == 'com-lihaoyi/cask'
+    if: github.repository == 'com-lihaoyi/gask'
     runs-on: ubuntu-20.04
     env:
       LANG: "en_US.UTF-8"

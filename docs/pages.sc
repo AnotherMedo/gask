@@ -122,7 +122,7 @@ def navBar(homePage: Boolean, contentHeaders: Seq[(String, Int)], pageHeaders: S
 //          marginTop := -5
 //        ),
         color := "#f8f8f8",
-        " Cask",
+        " Gask",
         href := (if (homePage) "" else ".."),
         Styles.subtleLink,
         NarrowStyles.flexFont,

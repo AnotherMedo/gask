@@ -1,19 +1,19 @@
 package app
 
 case class MinimalRoutes()(implicit cc: castor.Context,
-                           log: cask.Logger) extends cask.Routes{
-  @cask.get("/")
+                           log: gask.Logger) extends gask.Routes{
+  @gask.get("/")
   def hello() = {
     "Hello World!"
   }
 
-  @cask.post("/do-thing")
-  def doThing(request: cask.Request) = {
+  @gask.post("/do-thing")
+  def doThing(request: gask.Request) = {
     request.text().reverse
   }
 
   initialize()
 }
-object MinimalRoutesMain extends cask.Main{
+object MinimalRoutesMain extends gask.Main{
   val allRoutes = Seq(MinimalRoutes())
 }

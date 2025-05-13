@@ -4,10 +4,10 @@ import io.undertow.websockets.WebSocketConnectionCallback
 import io.undertow.websockets.core.{AbstractReceiveListener, BufferedTextMessage, WebSocketChannel, WebSockets}
 import io.undertow.websockets.spi.WebSocketHttpExchange
 
-object Websockets2 extends cask.MainRoutes{
-  @cask.websocket("/connect/:userName")
-  def showUserProfile(userName: String): cask.WebsocketResult = {
-    if (userName != "haoyi") cask.Response("", statusCode = 403)
+object Websockets2 extends gask.MainRoutes{
+  @gask.websocket("/connect/:userName")
+  def showUserProfile(userName: String): gask.WebsocketResult = {
+    if (userName != "haoyi") gask.Response("", statusCode = 403)
     else new WebSocketConnectionCallback() {
       override def onConnect(exchange: WebSocketHttpExchange, channel: WebSocketChannel): Unit = {
         channel.getReceiveSetter.set(

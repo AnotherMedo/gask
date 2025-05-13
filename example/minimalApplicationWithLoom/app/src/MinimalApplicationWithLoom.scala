@@ -1,12 +1,12 @@
 package app
 
-import cask.main.Main
+import gask.main.Main
 
 import java.lang.management.{ManagementFactory, RuntimeMXBean}
 import java.util.concurrent.{ExecutorService, Executors}
 
 // run benchmark with : ./mill benchmark.runBenchmark
-object MinimalApplicationWithLoom extends cask.MainRoutes {
+object MinimalApplicationWithLoom extends gask.MainRoutes {
   // Print Java version
   private val javaVersion: String = System.getProperty("java.version")
   println("Java Version: " + javaVersion)
@@ -26,7 +26,7 @@ object MinimalApplicationWithLoom extends cask.MainRoutes {
   //TO USE LOOM:
   //1. JDK 21 or later is needed.
   //2. add VM option: --add-opens java.base/java.lang=ALL-UNNAMED
-  //3. set system property: cask.virtual-threads.enabled=true
+  //3. set system property: gask.virtual-threads.enabled=true
   //4. NOTE: `java.util.concurrent.Executors.newVirtualThreadPerTaskExecutor` is using the shared
   //   ForkJoinPool in VirtualThread. If you want to use a separate ForkJoinPool, you can create
   //   a new ForkJoinPool instance and pass it to `createVirtualThreadExecutor` method.
@@ -38,16 +38,16 @@ object MinimalApplicationWithLoom extends cask.MainRoutes {
   /**
    * With curl: curl -X GET http://localhost:8080/
    * you wil see something like:
-   * Hello World! from thread:VirtualThread[#63,cask-handler-executor-virtual-thread-10]/runnable@ForkJoinPool-1-worker-1%
+   * Hello World! from thread:VirtualThread[#63,gask-handler-executor-virtual-thread-10]/runnable@ForkJoinPool-1-worker-1%
    * */
-  @cask.get("/")
+  @gask.get("/")
   def hello() = {
     Thread.sleep(100) // simulate some blocking work
     "Hello World!"
   }
 
-  @cask.post("/do-thing")
-  def doThing(request: cask.Request) = {
+  @gask.post("/do-thing")
+  def doThing(request: gask.Request) = {
     request.text().reverse
   }
 

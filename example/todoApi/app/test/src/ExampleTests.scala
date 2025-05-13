@@ -1,34 +1,39 @@
 package app
 import io.undertow.Undertow
 
+import gears.async.default.given
+import gears.async.*
 import utest._
 
 object ExampleTests extends TestSuite{
-  def withServer[T](example: cask.main.Main)(f: String => T): T = {
-    val server = Undertow.builder
-      .addHttpListener(8081, "localhost")
-      .setHandler(example.defaultHandler)
-      .build
-    server.start()
-    val res =
-      try f("http://localhost:8081")
-      finally server.stop()
-    res
+  def withServer[T](example: gask.main.Main)(f: String => T): T = {
+    Async.blocking:
+      val server = Undertow.builder
+        .addHttpListener(8081, "localhost")
+        .setHandler(example.defaultHandler)
+        .build
+      server.start()
+
+
+      val res =
+        try f("http://localhost:8081")
+        finally server.stop()
+      res
   }
 
   val tests = Tests{
     test("TodoMvcApi") - withServer(TodoMvcApi){ host =>
       requests.get(s"$host/list/all").text() ==>
-        """[{"checked":true,"text":"Get started with Cask"},{"checked":false,"text":"Profit!"}]"""
+        """[{"checked":true,"text":"Get started with Gask"},{"checked":false,"text":"Profit!"}]"""
       requests.get(s"$host/list/active").text() ==>
         """[{"checked":false,"text":"Profit!"}]"""
       requests.get(s"$host/list/completed").text() ==>
-        """[{"checked":true,"text":"Get started with Cask"}]"""
+        """[{"checked":true,"text":"Get started with Gask"}]"""
 
       requests.post(s"$host/toggle/1")
 
       requests.get(s"$host/list/all").text() ==>
-        """[{"checked":true,"text":"Get started with Cask"},{"checked":true,"text":"Profit!"}]"""
+        """[{"checked":true,"text":"Get started with Gask"},{"checked":true,"text":"Profit!"}]"""
 
       requests.get(s"$host/list/active").text() ==>
         """[]"""

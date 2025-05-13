@@ -17,7 +17,7 @@ val communityBuildDottyVersion = sys.props.get("dottyVersion").toList
 
 val scalaVersions = List(scala3) ++ communityBuildDottyVersion
 
-trait CaskModule extends CrossScalaModule with PublishModule{
+trait GaskModule extends CrossScalaModule with PublishModule{
   def isScala3 = ZincWorkerUtil.isScala3(crossScalaVersion)
 
   def publishVersion = VcsVersion.vcsState().format()
@@ -25,23 +25,22 @@ trait CaskModule extends CrossScalaModule with PublishModule{
   def pomSettings = PomSettings(
     description = artifactName(),
     organization = "com.lihaoyi",
-    url = "https://github.com/com-lihaoyi/cask",
+    url = "https://github.com/com-lihaoyi/gask",
     licenses = Seq(License.MIT),
-    versionControl = VersionControl.github("com-lihaoyi", "cask"),
+    versionControl = VersionControl.github("com-lihaoyi", "gask"),
     developers = Seq(
       Developer("lihaoyi", "Li Haoyi","https://github.com/lihaoyi")
     )
   )
 }
 
-trait CaskMainModule extends CaskModule {
+trait GaskMainModule extends GaskModule {
   def ivyDeps = T{
     Agg(
       ivy"io.undertow:undertow-core:2.3.18.Final",
-      ivy"com.lihaoyi::upickle:4.0.2"
-    ) ++
-    Agg.when(isScala3)(ivy"ch.epfl.lamp::gears::0.2.0") ++
-    Agg.when(!isScala3)(ivy"org.scala-lang:scala-reflect:$crossScalaVersion")
+      ivy"com.lihaoyi::upickle:4.0.2",
+      ivy"ch.epfl.lamp::gears::0.2.0"
+    ) 
   }
 
   def compileIvyDeps = Agg.when(!isScala3)(ivy"com.lihaoyi:::acyclic:0.3.15")
@@ -54,12 +53,12 @@ trait CaskMainModule extends CaskModule {
       ivy"com.lihaoyi::requests::0.9.0"
     )
   }
-  def moduleDeps = Seq(cask.util.jvm(crossScalaVersion))
+  def moduleDeps = Seq(gask.util.jvm(crossScalaVersion))
 }
 
-object cask extends Cross[CaskMainModule](scalaVersions) {
+object gask extends Cross[GaskMainModule](scalaVersions) {
   object util extends Module {
-    trait UtilModule extends CaskModule with PlatformScalaModule{
+    trait UtilModule extends GaskModule with PlatformScalaModule{
       def ivyDeps = Agg(
         ivy"com.lihaoyi::sourcecode:0.4.2",
         ivy"com.lihaoyi::pprint:0.9.0",
@@ -89,7 +88,7 @@ object cask extends Cross[CaskMainModule](scalaVersions) {
 }
 
 trait BenchmarkModule extends CrossScalaModule {
-  def moduleDeps = Seq(cask(crossScalaVersion))
+  def moduleDeps = Seq(gask(crossScalaVersion))
   def ivyDeps = Agg[Dep](
   )
 }
@@ -122,7 +121,7 @@ object benchmark extends Cross[BenchmarkModule](build.scalaVersions) with RunMod
           s"example.$example.app[$scala3].run")
         .spawn(
           cwd = projectRoot,
-          env = Map("CASK_VIRTUAL_THREAD" -> vt.toString),
+          env = Map("CASK_VIRTUAL_THREAD" -> vt.toString, "--add-opens java.base/java.lang" -> "ALL-UNNAMED"),
           stdout = os.Inherit,
           stderr = os.Inherit)
     }
@@ -175,7 +174,7 @@ object benchmark extends Cross[BenchmarkModule](build.scalaVersions) with RunMod
 
 trait LocalModule extends CrossScalaModule{
   override def millSourcePath = super.millSourcePath / "app"
-  def moduleDeps = Seq(cask(crossScalaVersion))
+  def moduleDeps = Seq(gask(crossScalaVersion))
 }
 
 /*
@@ -239,7 +238,7 @@ def zippedExamples = T {
         .replaceAll("build.scala3", s"\"${scala3}\"")
         .replaceFirst(
           "def ivyDeps = Agg\\[Dep\\]\\(",
-          "def ivyDeps = Agg(\n    ivy\"com.lihaoyi::cask:" + releaseTag + "\","
+          "def ivyDeps = Agg(\n    ivy\"com.lihaoyi::gask:" + releaseTag + "\","
         )
     )
 
@@ -258,8 +257,8 @@ def testExamples() = T.command{
     os.write.over(
       base / "build.mill",
       os.read(base / "build.mill").replaceAll(
-        "ivy\"com.lihaoyi::cask:.*\"",
-        s"""ivy"com.lihaoyi::cask:${VcsVersion.vcsState().format()}""""
+        "ivy\"com.lihaoyi::gask:.*\"",
+        s"""ivy"com.lihaoyi::gask:${VcsVersion.vcsState().format()}""""
       )
     )
     os.proc("./mill", "app.test").call(cwd = base, stdout = os.Inherit)
@@ -274,7 +273,7 @@ def uploadToGithub() = T.command{
   val label = vcsState.format()
   if (releaseTag == label) {
     requests.post(
-      "https://api.github.com/repos/com-lihaoyi/cask/releases",
+      "https://api.github.com/repos/com-lihaoyi/gask/releases",
       data = ujson.write(
         ujson.Obj(
           "tag_name" -> releaseTag,

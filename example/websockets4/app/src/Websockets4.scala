@@ -1,17 +1,17 @@
 package app
 
 case class Websockets4()(implicit cc: castor.Context,
-                         log: cask.Logger) extends cask.Routes{
+                         log: gask.Logger) extends gask.Routes{
   // make sure compress decorator passes non-requests through correctly
-  override def decorators = Seq(new cask.decorators.compress())
-  @cask.websocket("/connect/:userName")
-  def showUserProfile(userName: String): cask.WebsocketResult = {
-    if (userName != "haoyi") cask.Response("", statusCode = 403)
-    else cask.WsHandler { channel =>
-      cask.WsActor {
-        case cask.Ws.Text("") => channel.send(cask.Ws.Close())
-        case cask.Ws.Text(data) =>
-          channel.send(cask.Ws.Text(userName + " " + data))
+  override def decorators = Seq(new gask.decorators.compress())
+  @gask.websocket("/connect/:userName")
+  def showUserProfile(userName: String): gask.WebsocketResult = {
+    if (userName != "haoyi") gask.Response("", statusCode = 403)
+    else gask.WsHandler { channel =>
+      gask.WsActor {
+        case gask.Ws.Text("") => channel.send(gask.Ws.Close())
+        case gask.Ws.Text(data) =>
+          channel.send(gask.Ws.Text(userName + " " + data))
       }
     }
   }
@@ -19,6 +19,6 @@ case class Websockets4()(implicit cc: castor.Context,
   initialize()
 }
 
-object Websockets4Main extends cask.Main{
+object Websockets4Main extends gask.Main{
   val allRoutes = Seq(Websockets4())
 }

@@ -1,13 +1,13 @@
 package app
-object RedirectAbort extends cask.MainRoutes{
-  @cask.get("/")
+object RedirectAbort extends gask.MainRoutes{
+  @gask.get("/")
   def index() = {
-    cask.Redirect("/login")
+    gask.Redirect("/login")
   }
 
-  @cask.get("/login")
+  @gask.get("/login")
   def login() = {
-    cask.Abort(401)
+    gask.Abort(401)
   }
 
   initialize()

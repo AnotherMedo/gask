@@ -1,7 +1,7 @@
 package app
 import scalatags.Text.all._
-object Scalatags extends cask.MainRoutes{
-  @cask.get("/")
+object Scalatags extends gask.MainRoutes{
+  @gask.get("/")
   def hello() = {
     doctype("html")(
       html(

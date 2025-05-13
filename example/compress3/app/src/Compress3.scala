@@ -1,17 +1,18 @@
 package app
 
 case class Compress3()(implicit cc: castor.Context,
-                       log: cask.Logger) extends cask.Routes{
+                       log: gask.Logger) extends gask.Routes{
 
-  @cask.get("/")
+  @gask.get("/")
   def hello() = {
+    
     "Hello World! Hello World! Hello World!"
   }
 
   initialize()
 }
 
-object Compress3Main extends cask.Main{
-  override def mainDecorators = Seq(new cask.decorators.compress())
+object Compress3Main extends gask.Main{
+  override def mainDecorators = Seq(new gask.decorators.compress())
   val allRoutes = Seq(Compress3())
 }

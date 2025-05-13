@@ -1,17 +1,21 @@
 package app
 
-case class Compress2()(implicit cc: castor.Context,
-                       log: cask.Logger) extends cask.Routes{
-  override def decorators = Seq(new cask.decorators.compress())
+import gears.async.*
+import gears.async.default.given
 
-  @cask.get("/")
-  def hello() = {
+case class Compress2()(implicit cc: castor.Context,
+                       log: gask.Logger) extends gask.Routes{
+  override def decorators = Seq(new gask.decorators.compress())
+
+  @gask.get("/")
+  def hello()(using Async) =  {
+    AsyncOperations.sleep(5000)
     "Hello World! Hello World! Hello World!"
   }
 
   initialize()
 }
 
-object Compress2Main extends cask.Main{
+object Compress2Main extends gask.Main{
   val allRoutes = Seq(Compress2())
 }

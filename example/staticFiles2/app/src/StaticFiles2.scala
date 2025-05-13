@@ -1,18 +1,18 @@
 package app
-object StaticFiles2 extends cask.MainRoutes{
-  @cask.get("/")
+object StaticFiles2 extends gask.MainRoutes{
+  @gask.get("/")
   def index() = {
     "Hello!"
   }
 
-  @cask.staticFiles("/static/file", headers = Seq("Cache-Control" -> "max-age=31536000"))
-  def staticFileRoutes() = "resources/cask"
+  @gask.staticFiles("/static/file", headers = Seq("Cache-Control" -> "max-age=31536000"))
+  def staticFileRoutes() = "resources/gask"
 
-  @cask.decorators.compress
-  @cask.staticResources("/static/resource")
-  def staticResourceRoutes() = "cask"
+  @gask.decorators.compress
+  @gask.staticResources("/static/resource")
+  def staticResourceRoutes() = "gask"
 
-  @cask.staticResources("/static/resource2")
+  @gask.staticResources("/static/resource2")
   def staticResourceRoutes2() = "."
 
   initialize()
