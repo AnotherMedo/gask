@@ -6,21 +6,23 @@ import castor.Context.Simple.global
 import org.asynchttpclient.ws.{WebSocket, WebSocketListener, WebSocketUpgradeHandler}
 import utest._
 import gask.Logger.Console.globalLogger
+import gears.async.Async
+import gears.async.default.given
 
 object ExampleTests extends TestSuite{
-
-
   def withServer[T](example: gask.main.Main)(f: String => T): T = {
-    val server = io.undertow.Undertow.builder
-      .addHttpListener(8081, "localhost")
-      .setHandler(example.defaultHandler)
-      .build
-    server.start()
-    val res =
-      try f("http://localhost:8081")
-      finally server.stop()
-    res
-  }
+    Async.blocking:
+      val server = io.undertow.Undertow.builder
+        .addHttpListener(8081, "localhost")
+        .setHandler(example.defaultHandler)
+        .build
+      server.start()
+      val res =
+        try f("http://localhost:8081")
+        finally server.stop()
+      res
+    }
+    
   val tests = Tests{
     test("Websockets") - withServer(Websockets){ host =>
       @volatile var out = List.empty[String]
